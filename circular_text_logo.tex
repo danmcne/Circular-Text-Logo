@@ -1,0 +1,32 @@
+
+
+\documentclass{standalone}
+\usepackage{pstricks,pst-text,amssymb,graphicx}
+\usepackage{allrunes}
+
+
+\begin{document}
+
+\begin{pspicture}(-3,-3)(3,3)
+    % Top arc with custom text (supports font and color changes)
+    \psarc[radius=2cm, linecolor=green, linewidth=1.5pt](0,0){2}{0}{360} % Reversed arc direction
+    \scalebox{1}[-1]{\rput{0}(0,0){\pstextpath[c](0,0.15){\psarc[linecolor=green](0,0){2}{180}{0}}{
+        \scalebox{1}[-1]{\textcolor{red}{\textbf{Top Text \textara{also}~\textara{in}~\textara{runes}}}} % Corrected text orientation with \scalebox
+    }}}
+
+    % Bottom arc with custom text (supports font and color changes)
+    \psarc[radius=2.5cm, linecolor=blue, linewidth=2pt](0,0){2.5}{0}{360} % Correct bottom arc direction
+    \rput{0}(0,0){\pstextpath[c](0,0.15){\psarc[linecolor=blue](0,0){2.5}{180}{0}}{
+        \textcolor{purple}{$\mathbb{THIS~IS~THE~BOTTOM~TEXT}$} % Custom font and color
+    }}
+
+    % Center text with newlines
+    \rput(0,0){\parbox{4cm}{
+        \centering
+        \textbf{$\mathbb{CENTER~TEXT}$} \\ % Math blackboard bold for center text
+        \textit{This part can be a few lines long.}
+    }}
+
+\end{pspicture}
+
+\end{document}
