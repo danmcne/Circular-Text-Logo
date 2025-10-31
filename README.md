@@ -1,69 +1,131 @@
-# Circular Text Logo Generator
 
-## Overview
+# Circular Text Logo with LaTeX and PSTricks
 
-This LaTeX project allows you to generate circular text logos with customizable text, fonts, colors, and line styles. It leverages `PSTricks` and `pst-text` to create text paths that follow circular arcs, making it suitable for creating logos or signs with top, bottom, and center-aligned text. The project also supports the use of specialized fonts such as runes and math blackboard bold, offering flexibility for creative designs.
+This repository contains a LaTeX template for creating circular logos or name signs with text along top and bottom arcs, and an optional center text block. It uses **PSTricks** and **pst-text** for text-on-path effects, and optionally **allrunes** for runic characters.
+
+---
 
 ## Features
 
-- **Top Arc Text**: Custom text at the top of the circle, with options for color, font style, and orientation correction (to ensure text is displayed correctly on the outer edge of the circle).
-- **Bottom Arc Text**: Customizable text on the bottom arc of the circle, supporting color changes and font options.
-- **Center Text**: Main text in the center of the circle, supporting multiple lines, bold or italic styles, and special fonts like `mathbb`.
-- **Supports Runes**: Using the `allrunes` package, you can display runic characters in the top or bottom arc of the circle.
+* Top and bottom text along circular arcs
+* Optional center text block (multi-line)
+* Adjustable circle sizes and text radii
+* Fully vector output — scales cleanly for print or web
+* Minimal, easy-to-edit template
 
-## Dependencies
+---
 
-To compile the document, you'll need the following LaTeX packages:
+## Requirements
 
-- `pstricks`
-- `pst-text`
-- `amssymb`
-- `graphicx`
-- `allrunes`
+You need a LaTeX distribution (TeX Live, MacTeX, MiKTeX) with the following packages:
 
-Make sure these packages are installed in your LaTeX environment.
+* `pstricks`
+* `pst-text`
+* `xcolor`
+* `graphicx`
+* `amssymb`
+* `allrunes` (optional, only if you use `\textara{}`)
 
-## How to Use
+**Important:** PSTricks relies on PostScript, so **do not compile with `pdflatex`**. Use the LaTeX → DVI → PS → PDF workflow.
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/yourusername/circular-text-logo-generator.git
-   cd circular-text-logo-generator
-   ```
+On Ubuntu, you can install the required packages using:
 
-2. **Edit the LaTeX File**:
-   Open the `.tex` file and modify the following sections to customize the logo:
+```
+sudo apt install texlive texlive-latex-extra texlive-pstricks texlive-fonts-recommended
+# add texlive-fonts-extra if you need extra fonts such as allrunes
+```
 
-   - **Top Text**: Update the `Top Text \textara{also}~\textara{in}~\textara{runes}` section to your desired text, including runes if needed.
-   - **Bottom Text**: Modify the `\mathbb{THIS~IS~THE~BOTTOM~TEXT}` to change the bottom text. You can use different fonts or math symbols here.
-   - **Center Text**: Customize the `CENTER~TEXT` and additional lines in the center of the logo.
+---
 
-3. **Compile the Document**:
-   Use a LaTeX compiler that supports `PSTricks`, such as `XeLaTeX` or `LaTeX -> dvips -> ps2pdf` (the second is preferred):
+## How to Compile
 
-   ```bash
-   xelatex circular_text_logo.tex
-   ```
+### Command Line
 
-4. **Output**:
-   After compilation, the generated PDF will contain your circular text logo.
+From the repository directory, run:
 
-## Example
+1. `latex circular_logo.tex` → produces `circular_logo.dvi`
+2. `dvips circular_logo.dvi` → produces `circular_logo.ps`
+3. `ps2pdf circular_logo.ps` → produces `circular_logo.pdf`
 
-Here’s what a typical circular text logo looks like:
+This produces a high-quality PDF suitable for printing or digital use.
 
-- **Top Arc**: Red, bold text with runes at the top of the circle.
-- **Bottom Arc**: Purple text in math blackboard bold at the bottom.
-- **Center Text**: Large, centered text in blackboard bold, with additional italicized lines.
+### Using an Editor (Texmaker / TeXstudio)
 
-![Example Logo](example.png)
+1. Configure a Quick Build chain:
 
-## Customization
+   * LaTeX → DVI
+   * DVI → PS
+   * PS → PDF
 
-- **Font Customization**: You can change the fonts for both the top and bottom text. For example, use `\mathbb{}` for math blackboard bold, or add runes with `\textara{}`.
-- **Color Customization**: Adjust the `\textcolor{}` command to use different colors for each section of text.
-- **Line Thickness**: Modify the `linewidth` in the `\psarc` commands to adjust the thickness of the circle lines.
+2. Run Quick Build or execute each step manually.
+
+### Optional/Advanced: Makefile
+
+You can create a Makefile to automate the build process:
+
+```
+TEX = circular_logo
+all:
+    latex $(TEX).tex
+    dvips $(TEX).dvi
+    ps2pdf $(TEX).ps
+
+clean:
+    rm -f $(TEX).aux $(TEX).log $(TEX).dvi $(TEX).ps $(TEX).pdf
+```
+
+Then run `make` to build the PDF.
+
+---
+
+## Template Overview
+
+* **Circles (guids):** `\pscircle[linewidth=1pt,linecolor=green](0,0){3}` draws the outer circle of radius 3, and `\pscircle[linewidth=1pt,linecolor=purple](0,0){2.5}` draws the inner circle of radius 2.5. You can change linewidth/thickness, linecolors (remove for black) or radii. You can also simply delete or comment (with %) to remove one or both circles if desired.
+
+* **Arc radius:** the distance from the center of the logo to the text along the arc (e.g., `2.75`). Adjust to move text inward or outward.
+
+* **Vertical offset:** each `\pstextpath` has a coordinate like `(0,-0.15)` or `(0,-0.1)` to nudge the text relative to the arc. This ensures the path runs through the middle of the text. You may need to adjust this if you change font size or style.
+
+* **Top text mirroring:** `\scalebox{1}[-1]{...}` flips the text vertically so it reads upright along the top arc. The bottom arc usually does not need mirroring.
+
+* **Font and color:** use standard LaTeX commands like `\textbf{}`, `\textit{}`, `\textcolor{red}{...}`, and `\mathbb{...}`.
+
+* **Runes:** if using the `allrunes` package, you can include runic letters with `\textara{}`. You can use different rune sets or look for other languages.
+
+---
+
+## Example Adjustments
+
+* Move both text tracks farther from the center by increasing the arc radius.
+* Adjust how text intersects the path by changing the vertical offset.
+* Change font size and color to suit your design.
+* Hide (guide) circles by commenting out the green/purple `\pscircle` lines once text placement is finalized.
+
+---
+
+## Troubleshooting
+
+* **PSTricks commands undefined:** you ran `pdflatex`. Use the DVI → PS → PDF workflow instead.
+* **Missing package:** install it via your OS package manager or TeX package manager.
+* **Text alignment off after changing font size:** tweak the vertical offset `(0,y)` and/or use `\raisebox{...}{...}` for fine adjustments.
+
+---
 
 ## License
 
-This project is licensed under the MIT License. Feel free to modify and share!
+MIT — free to use, modify, and redistribute.
+
+---
+
+## Author
+
+Dan McNeill — 2025
+
+---
+
+## Quick Start
+
+1. Edit `circular_logo.tex` to set your top, center, and bottom text.
+2. Compile using the workflow above.
+3. Optionally hide the guide circles once you are happy with placement.
+4. Enjoy your circular logo!
